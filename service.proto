@@ -1,0 +1,174 @@
+syntax = "proto3";
+
+package gw2lfg;
+
+option go_package = "./pb";
+option csharp_namespace = "Gw2Lfg.Proto";
+
+
+// For C#
+// protoc --csharp_out=../GW2GroupFinderClient/Proto service.proto
+
+// For Go
+// protoc --go_out=. --go-grpc_out=. --proto_path=../GW2LfgProto ../GW2LfgProto/*.proto
+
+service LfgService {
+  rpc CreateGroup(CreateGroupRequest) returns (CreateGroupResponse) {}
+  rpc UpdateGroup(UpdateGroupRequest) returns (UpdateGroupResponse) {}
+  rpc ListGroups(ListGroupsRequest) returns (ListGroupsResponse) {}
+  rpc DeleteGroup(DeleteGroupRequest) returns (DeleteGroupResponse) {}
+  rpc SubscribeGroups(SubscribeGroupsRequest) returns (stream GroupsUpdate) {}
+  
+  rpc CreateGroupApplication(CreateGroupApplicationRequest) returns (CreateGroupApplicationResponse) {}
+  rpc UpdateGroupApplication(UpdateGroupApplicationRequest) returns (UpdateGroupApplicationResponse) {}
+  rpc ListGroupApplications(ListGroupApplicationsRequest) returns (ListGroupApplicationsResponse) {}
+  rpc DeleteGroupApplication(DeleteGroupApplicationRequest) returns (DeleteGroupApplicationResponse) {}
+  rpc SubscribeGroupApplications(SubscribeGroupApplicationsRequest) returns (stream GroupApplicationUpdate) {}
+
+  rpc Heartbeat(HeartbeatRequest) returns (HeartbeatResponse) {}
+}
+
+message CreateGroupRequest {
+  string title = 1;
+  KillProofId kill_proof_id = 2;
+  uint32 kill_proof_minimum = 3;
+}
+
+message CreateGroupResponse {
+  Group group = 1;
+}
+
+enum RaidId {
+  RAID_UNKNOWN = 0;
+  RAID_WING_1 = 1;
+  RAID_WING_2 = 2;
+  RAID_WING_3 = 3;
+  RAID_WING_4 = 4;
+  RAID_WING_5 = 5;
+  RAID_WING_6 = 6;
+  RAID_WING_7 = 7;
+}
+
+enum KillProofId {
+  KP_UNKNOWN = 0;
+  KP_LI = 1;
+  KP_BSKP = 2;
+  KP_UFE = 3;
+}
+
+message Group {
+  string id = 1;
+  string creator_id = 2;
+  string title = 3;
+  KillProofId kill_proof_id = 4;
+  uint32 kill_proof_minimum = 5;
+  int64 created_at_sec = 6;
+  int64 updated_at_sec = 7;
+}
+
+message UpdateGroupRequest {
+  Group group = 1;
+}
+
+message UpdateGroupResponse {
+  Group group = 1;
+}
+
+message DeleteGroupRequest {
+  string group_id = 1;
+}
+
+message DeleteGroupResponse {}
+
+message SubscribeGroupsRequest {
+}
+
+message GroupsUpdate {
+  oneof update {
+    Group new_group = 1;
+    Group updated_group = 2;
+    string removed_group_id = 3;
+  }
+}
+
+message ListGroupsRequest {
+}
+
+message ListGroupsResponse {
+  repeated Group groups = 1;
+}
+
+message GroupApplication {
+  string id = 1;
+  string account_name = 2;
+  string group_id = 3;
+  KillProof kill_proof = 4;
+  int64 created_at_sec = 5;
+  int64 updated_at_sec = 6;
+}
+
+message KillProof {
+  int32 li = 1;
+  int32 bskp = 2;
+  int32 ufe = 3;
+  int32 w1 = 4;
+  int32 w2 = 5;
+  int32 w3 = 6;
+  int32 w4 = 7;
+  int32 w5 = 8;
+  int32 w6 = 9;
+  int32 w7 = 10;
+  int32 w8 = 11;
+}
+
+message CreateGroupApplicationRequest {
+  string group_id = 1;
+}
+
+message CreateGroupApplicationResponse {
+  GroupApplication application = 1;
+}
+
+message UpdateGroupApplicationRequest {
+}
+
+message UpdateGroupApplicationResponse {
+}
+
+message ListGroupApplicationsRequest {
+  oneof id {
+    string group_id = 1;
+    string account_name = 2;
+  }
+}
+
+message ListGroupApplicationsResponse {
+  repeated GroupApplication applications = 1;
+}
+
+message DeleteGroupApplicationRequest {
+  string group_id = 1;
+  string application_id = 2;
+}
+
+message DeleteGroupApplicationResponse {
+}
+
+// TODO: We need updates similar to GroupsUpdate
+message SubscribeGroupApplicationsRequest {
+  string group_id = 1;
+}
+
+message GroupApplicationUpdate {
+  oneof update {
+    GroupApplication new_application = 1;
+    GroupApplication updated_application = 2;
+    string removed_application_id = 3;
+  }
+}
+
+message HeartbeatRequest {
+}
+
+message HeartbeatResponse {
+}
