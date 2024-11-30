@@ -7,7 +7,7 @@ option csharp_namespace = "Gw2Lfg.Proto";
 
 
 // For C#
-// protoc --csharp_out=../GW2GroupFinderClient/Proto service.proto
+// protoc --csharp_out=./Proto --proto_path=../GW2LfgProto ../GW2LfgProto/*.proto
 
 // For Go
 // protoc --go_out=. --go-grpc_out=. --proto_path=../GW2LfgProto ../GW2LfgProto/*.proto
